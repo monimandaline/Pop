@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="detailActivityName">Movie Detail</string>
+
+    <!-- Menu (selection type) -->
+    <string name="popular_movies_menu_item">Popular Movies</string>
+    <string name="top_rated_movies_menu_item">Top Rated Movies</string>
+
+    <!-- N/A -->
+    <string name="no_internet_connection">Please check your internet connection!</string>
+    <string name="no_movies">There are no movies to display</string>
+
+    <!-- Details -->
+    <string name="movie_poster">movie poster</string>
+    <string name="original_title">Original title:</string>
+    <string name="title">Title:</string>
+    <string name="release_date">Release date:</string>
+    <string name="rating">Rating:</string>
+    <string name="overview_title">Overview</string>
+
+
+    <string name="movie_menu_1">Add to favorite</string>
+
+
+</resources>
