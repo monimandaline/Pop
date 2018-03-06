@@ -8,17 +8,15 @@ import org.parceler.Parcel;
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.POSTER_BASE_URL;
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.POSTER_BACKDROP_URL;
 
-// Model class that represents the available info of movies
-// Parceler guideline: https://guides.codepath.com/android/Using-Parceler
-// https://android.jlelse.eu/parcelable-vs-serializable-6a2556d51538
+// Movie model class
+// Parceler guideline: https://guides.codepath.com/android/Using-Parceler, https://github.com/codepath/android_guides/wiki/Using-Parceler
 
 @Parcel
 public class MovieModel {
-
+    // fields must be package private
     private int id;
     private String originalTitle;
     private String posterPath;
-
     private String backdropPath;
     private String releaseDate;
     private double voteAverage;
@@ -98,7 +96,7 @@ public class MovieModel {
         return voteAverage;
     }
 
-    public void setVoteAverage(double voteAverage) {
+    public void setVoteAverage(float voteAverage) {
         this.voteAverage = voteAverage;
     }
 

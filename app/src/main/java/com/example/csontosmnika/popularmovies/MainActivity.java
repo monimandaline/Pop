@@ -8,11 +8,13 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -22,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.csontosmnika.popularmovies.utils.EndlessScrollListener;
+import com.example.csontosmnika.popularmovies.utils.ScreenColumnCalculator;
 
 import org.parceler.Parcels;
 
@@ -37,6 +40,12 @@ import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDb
 // Used guidelines:
 // Android Card View and Recycler View - Delaroy Studios video, https://www.youtube.com/watch?v=7Fe1jigV5Qs, https://github.com/delaroy/AndroidCardView
 // Endless Scroll https://gist.github.com/pratikbutani/dc6b963aa12200b3ad88aecd0d103872 and Carlos (Udacity mentor)
+// Parceler:
+// https://guides.codepath.com/android/Using-Parceler,
+// https://github.com/codepath/android_guides/wiki/Using-Parceler
+// https://guides.codepath.com/android/Using-Parcelable#creating-a-parcelable-the-manual-way (Passing Data Between Intents)
+// Save list element position:
+// https://eliasbland.wordpress.com/2011/07/28/how-to-save-the-position-of-a-scrollview-when-the-orientation-changes-in-android/
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<List<MovieModel>> {
@@ -48,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements
     private List<MovieModel> movies = new ArrayList<>();
 
     private MovieAdapter movieAdapter;
-    private RecyclerView RecyclerView;
+    public RecyclerView RecyclerView;
     private ProgressBar progressBar;
     private TextView emptyStateTextView;
 
@@ -73,24 +82,30 @@ public class MainActivity extends AppCompatActivity implements
         // Screen mode span settings
         int orientation = this.getResources().getConfiguration().orientation;
         int spanCount = 2;
-        if (orientation == 2) {
+
+        /*if (orientation == 2) {
             //code for landscape mode
             spanCount = 3;
         } else {
             //code for portrait mode
             spanCount = 2;
-        }
+        }*/
+
+        spanCount = ScreenColumnCalculator.calculateNoOfColumns(getApplicationContext());
+
 
         layoutManager = new GridLayoutManager(this, spanCount);
+
         RecyclerView.setItemAnimator(new DefaultItemAnimator());
         RecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, dpToPx(4), true));
         RecyclerView.setLayoutManager(layoutManager);
 
-        // Listener for onClick, put detail datas to DetailsActivity with Parceler
+        // Listener for onClick Movie
         MovieAdapter.OnItemClickListener listener = new MovieAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MovieModel movie) {
                 Intent movieDetailsIntent = new Intent(MainActivity.this, DetailsActivity.class);
+                // Wrapping Up the Parcel, put data for details
                 movieDetailsIntent.putExtra(DETAILS, Parcels.wrap(movie));
                 startActivity(movieDetailsIntent);
             }
@@ -134,6 +149,24 @@ public class MainActivity extends AppCompatActivity implements
             emptyStateTextView.setText(R.string.no_internet_connection);
         }
     }
+
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntArray("ARTICLE_SCROLL_POSITION",
+                new int[]{ RecyclerView.getScrollX(), RecyclerView.getScrollY()});
+    }
+
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        final int[] position = savedInstanceState.getIntArray("ARTICLE_SCROLL_POSITION");
+        if(position != null)
+            RecyclerView.post(new Runnable() {
+                public void run() {
+                    RecyclerView.scrollTo(position[0], position[1]);
+                }
+            });
+    }
+
 
 
     public void loadNextDataFromApi(int offset) {

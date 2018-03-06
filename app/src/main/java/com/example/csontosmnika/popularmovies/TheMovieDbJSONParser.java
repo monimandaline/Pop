@@ -78,7 +78,7 @@ public class TheMovieDbJSONParser {
 
                 double voteAverage = 0;
                 if (results.has(VOTE_AVERAGE)) {
-                    voteAverage = results.optDouble(VOTE_AVERAGE);
+                    voteAverage = (double) results.optDouble(VOTE_AVERAGE);
                 }
 
                 String overview = "";

@@ -8,6 +8,9 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import org.parceler.Parcels;
 
+// Parceler guideline: https://guides.codepath.com/android/Using-Parceler, https://github.com/codepath/android_guides/wiki/Using-Parceler
+// Autofit column: https://stackoverflow.com/questions/33575731/gridlayoutmanager-how-to-auto-fit-columns
+
 public class DetailsActivity extends AppCompatActivity {
 
     ImageView backdropView;
@@ -31,6 +34,7 @@ public class DetailsActivity extends AppCompatActivity {
         voteAverageBar = findViewById(R.id.bar_rating);
         overviewView = findViewById(R.id.tv_overview);
 
+        // Unwrapping the Parcel, get detail movie datas
         MovieModel MovieDetails = Parcels.unwrap(getIntent().getParcelableExtra(DETAILS));
 
         String posterURL = MovieDetails.getBackdropUriString();
