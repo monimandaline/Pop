@@ -8,7 +8,8 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Parcelable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -26,7 +27,9 @@ import android.widget.TextView;
 import com.example.csontosmnika.popularmovies.utils.EndlessScrollListener;
 import com.example.csontosmnika.popularmovies.utils.ScreenColumnCalculator;
 
-import org.parceler.Parcels;
+//import org.parceler.Parcels;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,17 +63,22 @@ public class MainActivity extends AppCompatActivity implements
     public RecyclerView RecyclerView;
     private ProgressBar progressBar;
     private TextView emptyStateTextView;
+    private TextView originalTitle;
 
     static final String DETAILS = "details";
 
     GridLayoutManager layoutManager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle savedState) {
+        super.onCreate(savedState);
         setContentView(R.layout.activity_main);
 
-        THEMOVIEDB_URL = POPULAR_MOVIES;
+        //onRestoreInstanceState(savedInstanceState);
+
+        if (savedState == null) {
+            THEMOVIEDB_URL = POPULAR_MOVIES;
+        }
 
         //Assign the views
         RecyclerView = findViewById(R.id.rv_movies);
@@ -78,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements
         emptyStateTextView = findViewById(R.id.tv_empty_state);
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
+        originalTitle = findViewById(R.id.tv_original_title);
 
         // Screen mode span settings
         int orientation = this.getResources().getConfiguration().orientation;
@@ -101,17 +110,22 @@ public class MainActivity extends AppCompatActivity implements
         RecyclerView.setLayoutManager(layoutManager);
 
         // Listener for onClick Movie
-        MovieAdapter.OnItemClickListener listener = new MovieAdapter.OnItemClickListener() {
+
+       MovieAdapter.OnItemClickListener listener = new MovieAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MovieModel movie) {
                 Intent movieDetailsIntent = new Intent(MainActivity.this, DetailsActivity.class);
                 // Wrapping Up the Parcel, put data for details
-                movieDetailsIntent.putExtra(DETAILS, Parcels.wrap(movie));
+                //movieDetailsIntent.putExtra(DETAILS, Parcels.wrap(movie));
+                movieDetailsIntent.putExtra(DETAILS, movie);
+
+                //ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, originalTitle, "transition");
+                //ActivityCompat.startActivity(MainActivity.this, movieDetailsIntent, options.toBundle());
                 startActivity(movieDetailsIntent);
             }
         };
 
-        movieAdapter = new MovieAdapter(this, movies, listener);
+       movieAdapter = new MovieAdapter(this, movies, listener);
         RecyclerView.setAdapter(movieAdapter);
 
         // Endless list
@@ -150,23 +164,29 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putIntArray("ARTICLE_SCROLL_POSITION",
-                new int[]{ RecyclerView.getScrollX(), RecyclerView.getScrollY()});
+                new int[]{RecyclerView.getScrollX(), RecyclerView.getScrollY()});
+        outState.putString("SORT_URL", THEMOVIEDB_URL);
+        outState.putString("PAGE", String.valueOf(page));
     }
 
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        final int[] position = savedInstanceState.getIntArray("ARTICLE_SCROLL_POSITION");
-        if(position != null)
+    @Override
+    protected void onRestoreInstanceState(Bundle savedState) {
+        super.onRestoreInstanceState(savedState);
+        final int[] position = savedState.getIntArray("ARTICLE_SCROLL_POSITION");
+        if (position != null)
             RecyclerView.post(new Runnable() {
                 public void run() {
                     RecyclerView.scrollTo(position[0], position[1]);
                 }
             });
-    }
 
+        THEMOVIEDB_URL = savedState.getString("SORT_URL");
+        page = Integer.parseInt(savedState.getString("PAGE"));
+    }
 
 
     public void loadNextDataFromApi(int offset) {
@@ -300,4 +320,5 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
+
 }

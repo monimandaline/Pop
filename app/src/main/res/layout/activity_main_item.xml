@@ -9,7 +9,8 @@
         android:id="@+id/cv_movie_item"
         style="@style/styleCardView"
         card_view:cardBackgroundColor="@android:color/transparent"
-        card_view:cardCornerRadius="0dp">
+        card_view:cardCornerRadius="0dp"
+        android:transitionName="transition">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -25,7 +26,8 @@
                 style="@style/styleMovieTitle"
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/iv_movie_poster"
-                tools:text="Title" />
+                tools:text="Title"
+                />
 
             <ImageView
                 android:id="@+id/iv_overflow"

@@ -6,7 +6,9 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-import org.parceler.Parcels;
+//import org.parceler.Parcels;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 // Parceler guideline: https://guides.codepath.com/android/Using-Parceler, https://github.com/codepath/android_guides/wiki/Using-Parceler
 // Autofit column: https://stackoverflow.com/questions/33575731/gridlayoutmanager-how-to-auto-fit-columns
@@ -19,6 +21,8 @@ public class DetailsActivity extends AppCompatActivity {
     RatingBar voteAverageBar;
     TextView releaseDateView;
     TextView overviewView;
+
+    private int MOVIE_ID;
 
     static final String DETAILS = "details";
 
@@ -35,7 +39,11 @@ public class DetailsActivity extends AppCompatActivity {
         overviewView = findViewById(R.id.tv_overview);
 
         // Unwrapping the Parcel, get detail movie datas
-        MovieModel MovieDetails = Parcels.unwrap(getIntent().getParcelableExtra(DETAILS));
+        //MovieModel MovieDetails = Parcels.unwrap(getIntent().getParcelableExtra(DETAILS));
+
+        final MovieModel MovieDetails = (MovieModel) getIntent().getParcelableExtra(DETAILS);
+        //MOVIE_ID = MovieModel.getId();
+
 
         String posterURL = MovieDetails.getBackdropUriString();
         Picasso.with(this)
