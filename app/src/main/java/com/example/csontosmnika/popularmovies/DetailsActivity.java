@@ -2,10 +2,12 @@ package com.example.csontosmnika.popularmovies;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.csontosmnika.popularmovies.models.MovieModel;
 import com.example.csontosmnika.popularmovies.data.MovieContract;
@@ -48,7 +51,7 @@ public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.tv_overview) TextView overviewView;
     @BindView(R.id.Button_Favorite) FloatingActionButton AddToFavoriteFloatingActionButton;
 
-    private int MOVIE_ID;
+    private String MOVIE_ID;
 
     static final String DETAILS = "details";
 
@@ -56,6 +59,8 @@ public class DetailsActivity extends AppCompatActivity {
     SQLiteDatabase mSqLiteDatabase ;
     private boolean mIsFavoriteMovie;
     private MovieModel MovieDetails;
+
+    private Uri mCurrentProductUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,8 @@ public class DetailsActivity extends AppCompatActivity {
         MovieDetails = (MovieModel) getIntent().getParcelableExtra(DETAILS);
 
         mContext = this;
+
+        MOVIE_ID = String.valueOf(MovieDetails.getId());
 
        if(isFavoriteMovie(MovieDetails.getId(),mContext))
         {
@@ -111,9 +118,10 @@ public class DetailsActivity extends AppCompatActivity {
                         addMovieToFavorites();
                         AddToFavoriteFloatingActionButton.setImageResource(R.drawable.star_on);
                     } else {
-                        final String SELECTION = MovieContract.MovieEntry.COLUMN_ID + " = " + MovieDetails.getId();
+                        deleteMovieFromFavorites();
+                        //final String SELECTION = MovieContract.MovieEntry.COLUMN_ID + " = " + MovieDetails.getId();
                         AddToFavoriteFloatingActionButton.setImageResource(R.drawable.star_off);
-                        mSqLiteDatabase.delete(MovieContract.MovieEntry.TABLE_NAME, SELECTION, null);
+                        //mSqLiteDatabase.delete(MovieContract.MovieEntry.TABLE_NAME, SELECTION, null);
                     }
                 }
 
@@ -179,6 +187,31 @@ public class DetailsActivity extends AppCompatActivity {
         values.put(MovieContract.MovieEntry.COLUMN_POSTER_IMAGE,image);*/
         getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
     }
+
+
+    private void deleteMovieFromFavorites() {
+        // Only perform the delete if this is an existing product.
+
+      //  if (MovieContract.MovieEntry.CONTENT_URI != null) {
+            // Call the ContentResolver to delete the product at the given content URI.
+            // Pass in null for the selection and selection args because the mCurrentProductUri
+            // content URI already identifies the product that we want.
+            int rowsDeleted = getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendEncodedPath(MOVIE_ID).build(), null, null);
+
+            // Show a toast message depending on whether or not the delete was successful.
+            if (rowsDeleted == 0) {
+                // If no rows were deleted, then there was an error with the delete.
+                Toast.makeText(this, getString(R.string.editor_delete_movie_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the delete was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_delete_movie_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+      //  }
+
+    }
+
 
 
 }
