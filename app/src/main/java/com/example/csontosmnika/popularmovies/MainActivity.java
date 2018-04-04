@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             };
             favouriteAdapter = new FavouriteAdapter(this, movies, listener);
-            RecyclerView.setAdapter(movieAdapter);
+            RecyclerView.setAdapter(favouriteAdapter);
 
         }
 
