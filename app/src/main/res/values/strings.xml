@@ -23,4 +23,14 @@
     <string name="movie_menu_1">Add to favorite</string>
 
 
+    <string name="editor_insert_movie_successful">Movie is added to favourites</string>
+
+    <string name="editor_insert_movie_failed">Error with saving movie</string>
+
+    <string name="editor_delete_movie_successful">Movie deleted</string>
+
+    <string name="editor_delete_movie_failed">Error with deleting movie</string>
+
+
+
 </resources>
