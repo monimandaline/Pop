@@ -9,4 +9,6 @@
 
     <color name="colorTextTileBk">#59AC92EC</color>
     <color name="colorTextBk">#1AAC92EC</color>
+
+    <color name="colorVibrant">#ba48d1</color>
 </resources>

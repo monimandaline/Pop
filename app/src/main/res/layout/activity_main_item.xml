@@ -10,7 +10,7 @@
         style="@style/styleCardView"
         card_view:cardBackgroundColor="@android:color/transparent"
         card_view:cardCornerRadius="0dp"
-        android:transitionName="transition">
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -19,13 +19,15 @@
             <ImageView
                 android:id="@+id/iv_movie_poster"
                 style="@style/stylePoster"
-                android:contentDescription="@string/movie_poster" />
+                android:contentDescription="@string/movie_poster"
+                />
 
             <TextView
                 android:id="@+id/tv_movie_title"
                 style="@style/styleMovieTitle"
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/iv_movie_poster"
+                android:transitionName="transition"
                 tools:text="Title"
                 />
 
@@ -34,7 +36,8 @@
                 style="@style/styleMenuOverflow"
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/iv_movie_poster"
-                android:src="@drawable/ic_more_vert_white_24dp" />
+                android:src="@drawable/ic_more_vert_white_24dp"
+                android:contentDescription="@string/movie_menu_1"/>
 
         </RelativeLayout>
 

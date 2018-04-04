@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.csontosmnika.popularmovies.MovieModel;
+import com.example.csontosmnika.popularmovies.models.MovieModel;
 
 public class TheMovieDbJSONParser {
 

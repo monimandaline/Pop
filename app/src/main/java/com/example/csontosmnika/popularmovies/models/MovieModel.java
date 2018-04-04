@@ -1,9 +1,10 @@
-package com.example.csontosmnika.popularmovies;
+package com.example.csontosmnika.popularmovies.models;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-//import org.parceler.Parcel;
+
 
 // link to themoviedb.org
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.POSTER_BASE_URL;
@@ -14,14 +15,6 @@ import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDb
 
 
 public class MovieModel implements Parcelable{
-    // fields must be package private
-    /*private int id;
-    private String originalTitle;
-    private String posterPath;
-    private String backdropPath;
-    private String releaseDate;
-    private double voteAverage;
-    private String overview;*/
 
     private int id;
     private double voteAverage;
@@ -127,13 +120,11 @@ public class MovieModel implements Parcelable{
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeInt(id);
         parcel.writeString(originalTitle);
-        //parcel.writeString(title);
         parcel.writeString(posterPath);
         parcel.writeString(backdropPath);
         parcel.writeString(releaseDate);
         parcel.writeDouble(voteAverage);
         parcel.writeString(overview);
-        //parcel.writeInt( registered ? 1 :0 );
     }
 
     // Static field used to regenerate object, individually or as arrays /
@@ -146,17 +137,14 @@ public class MovieModel implements Parcelable{
         }
     };
 
-    /**Ctor from Parcel, reads back fields IN THE ORDER they were written */
     protected MovieModel(Parcel pc){
         id = pc.readInt();
         originalTitle = pc.readString();
-        // title =  pc.readString();
         posterPath = pc.readString();
         backdropPath = pc.readString();
         releaseDate = pc.readString();
         voteAverage = pc.readDouble();
         overview = pc.readString();
-        // registered = ( pc.readInt() == 1 );
     }
 
 

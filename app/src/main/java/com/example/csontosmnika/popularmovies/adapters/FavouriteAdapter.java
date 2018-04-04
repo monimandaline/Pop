@@ -1,29 +1,29 @@
-package com.example.csontosmnika.popularmovies;
+package com.example.csontosmnika.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.view.MenuInflater;
 import android.widget.Toast;
 
+import com.example.csontosmnika.popularmovies.R;
+import com.example.csontosmnika.popularmovies.models.MovieModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.page;
 
+public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.MovieAdapterViewHolder> {
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
-
-    public interface OnItemClickListener  {
+    public interface OnItemClickListener {
         void onItemClick(MovieModel item);
     }
 
@@ -31,9 +31,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private List<MovieModel> mMovies;
     private final OnItemClickListener listener;
 
-
     // Define viewholder
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder{
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
 
         public CardView cardView;
         public ImageView moviePosterView;
@@ -52,14 +51,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
 
-    public MovieAdapter(Context context, List<MovieModel> movies, OnItemClickListener listener) {
+    public FavouriteAdapter(Context context, List<MovieModel> movies, OnItemClickListener listener) {
         this.mContext = context;
         this.mMovies = movies;
         this.listener = listener;
     }
 
     @Override
-    public MovieAdapter.MovieAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public FavouriteAdapter.MovieAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         final Context context = viewGroup.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.activity_main_item, viewGroup, false);
 
@@ -80,6 +79,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
                 .load(movie.getImageUriString())
                 .into(holder.moviePosterView);
 
+
         holder.moviePosterView.setOnClickListener(new View.OnClickListener() {
                                                       @Override
                                                       public void onClick(View v) {
@@ -90,11 +90,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
 
         holder.movieTitleView.setOnClickListener(new View.OnClickListener() {
-                                                      @Override
-                                                      public void onClick(View v) {
-                                                          listener.onItemClick(movie);
-                                                      }
-                                                  }
+                                                     @Override
+                                                     public void onClick(View v) {
+                                                         listener.onItemClick(movie);
+                                                     }
+                                                 }
         );
 
 
@@ -103,9 +103,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             public void onClick(View view) {
                 showPopupMenu(view);
             }
-                    });
+        });
+
 
     }
+
 
     // Returns the total count of items
     @Override
@@ -114,20 +116,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         return mMovies.size();
     }
 
-
-
     // Set the actual movie list into the recyclerview on the activity
     public void setMovieList(List<MovieModel> movieList) {
-        if (mMovies == null || page == 1 ) {
-            mMovies = new ArrayList<>();
-        }
-        if (movieList != null) {
-            mMovies.addAll(movieList);
-        }
-
+        mMovies = new ArrayList<>();
         notifyDataSetChanged();
     }
-
 
     // Showing popup menu when tapping on 3 dots
     private void showPopupMenu(View view) {
@@ -140,7 +133,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     // Click listener for popup menu items
-         class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
 
         public MyMenuItemClickListener() {
         }
@@ -156,5 +149,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             return false;
         }
     }
+
 
 }

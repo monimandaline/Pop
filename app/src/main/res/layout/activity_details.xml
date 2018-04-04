@@ -15,12 +15,12 @@
             <ImageView
                 android:id="@+id/iv_detail_movie_poster"
                 style="@style/stylePosterBack"
-                android:contentDescription="@string/movie_poster" />
+                android:contentDescription="@string/movie_poster"
+                android:visibility="invisible"/>
             <TextView
                 android:id="@+id/tv_original_title"
                 style="@style/styleOriginalTitle"
-                tools:text="Title"
-                android:transitionName="transition"/>
+                tools:text="Title"/>
 
         <RatingBar
             android:id="@+id/bar_rating"
@@ -93,6 +93,23 @@
             android:id="@+id/tv_overview"
             tools:text="Overview Text"/>
 
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/Button_Favorite"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:src="@drawable/star_off"
+            app:elevation="8dp"
+            app:fabSize="normal"
+            app:backgroundTint="@color/colorAccent"
+            app:rippleColor="@color/colorVibrant" />
+
+
     </LinearLayout>
+
+
 
 </ScrollView>

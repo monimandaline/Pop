@@ -5,6 +5,7 @@
     <!-- Menu (selection type) -->
     <string name="popular_movies_menu_item">Popular Movies</string>
     <string name="top_rated_movies_menu_item">Top Rated Movies</string>
+    <string name="favourite_movies_menu_item">Favourite Movies</string>
 
     <!-- N/A -->
     <string name="no_internet_connection">Please check your internet connection!</string>

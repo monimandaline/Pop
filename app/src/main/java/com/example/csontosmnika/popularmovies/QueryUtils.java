@@ -12,7 +12,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import com.example.csontosmnika.popularmovies.MovieModel;
+import com.example.csontosmnika.popularmovies.models.MovieModel;
 
 // Helper methods related to requesting and receiving movie data from theMovie.org.
 
