@@ -170,6 +170,7 @@ public class DetailsActivity extends AppCompatActivity {
         values.put(MovieContract.MovieEntry.COLUMN_USER_RATING, MovieDetails.getVoteAverage());
         values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, MovieDetails.getReleaseDate());
         values.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, MovieDetails.getOverview());
+        values.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, MovieDetails.getPosterPath());
         values.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, MovieDetails.getBackdropPath());
         /*Bitmap bitmap = ((BitmapDrawable)backdropView.getDrawable()).getBitmap();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

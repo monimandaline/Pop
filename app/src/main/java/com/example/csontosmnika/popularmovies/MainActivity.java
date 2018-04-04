@@ -255,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements
                     MovieEntry.COLUMN_USER_RATING,
                     MovieEntry.COLUMN_RELEASE_DATE,
                     MovieEntry.COLUMN_OVERVIEW,
+                    MovieEntry.COLUMN_POSTER_PATH,
                     MovieEntry.COLUMN_BACKDROP_PATH
             };
             return new CursorLoader(this, MovieEntry.CONTENT_URI, projection, null, null, null);
