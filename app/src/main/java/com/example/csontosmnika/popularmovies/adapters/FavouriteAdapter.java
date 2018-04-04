@@ -2,11 +2,17 @@ package com.example.csontosmnika.popularmovies.adapters;
         import android.content.Context;
         import android.content.Intent;
         import android.database.Cursor;
+        import android.support.v7.widget.CardView;
+        import android.support.v7.widget.PopupMenu;
         import android.support.v7.widget.RecyclerView;
         import android.view.LayoutInflater;
+        import android.view.MenuInflater;
+        import android.view.MenuItem;
         import android.view.View;
         import android.view.ViewGroup;
         import android.widget.ImageView;
+        import android.widget.TextView;
+        import android.widget.Toast;
 
         import com.squareup.picasso.Picasso;
         import com.example.csontosmnika.popularmovies.DetailsActivity;
@@ -52,11 +58,39 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
         String posterUriString = cursor.getString(cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_POSTER_PATH));
         String originaltitle = cursor.getString(cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_MOVIE_TITLE));
 
-        MovieModel movie = getCurrentMovie(position);
+        holder.movieTitleView.setText(originaltitle);
+        final MovieModel movie = getCurrentMovie(position);
 
         Picasso.with(context)
                 .load(movie.getImageUriString())
-                .into(holder.posterIv);
+                .into(holder.moviePosterView);
+
+
+        holder.moviePosterView.setOnClickListener(new View.OnClickListener() {
+                                                      @Override
+                                                      public void onClick(View v) {
+                                                          listener.onItemClick(movie);
+                                                      }
+                                                  }
+        );
+
+
+        holder.movieTitleView.setOnClickListener(new View.OnClickListener() {
+                                                     @Override
+                                                     public void onClick(View v) {
+                                                         listener.onItemClick(movie);
+                                                     }
+                                                 }
+        );
+
+
+        holder.movieOverflowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopupMenu(view);
+            }
+        });
+
 
     }
 
@@ -75,25 +109,52 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
         }
     }
 
+
+    // Define viewholder
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.iv_movie_poster)
-        ImageView posterIv;
+
+        public CardView cardView;
+        public ImageView moviePosterView;
+        public TextView movieTitleView;
+        public ImageView movieOverflowView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
 
-           /* itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, DetailsActivity.class);
-                    Movie movie = getCurrentMovie(getAdapterPosition());
-                    intent.putExtra(EXTRA_MOVIE, movie);
-                    context.startActivity(intent);
-                }
-            });*/
+            cardView = itemView.findViewById(R.id.cv_movie_item);
+            moviePosterView = itemView.findViewById(R.id.iv_movie_poster);
+            movieTitleView = itemView.findViewById(R.id.tv_movie_title);
+            movieOverflowView = itemView.findViewById(R.id.iv_overflow);
+
+
+
         }
+
     }
+
+
+
+
+//    public class ViewHolder extends RecyclerView.ViewHolder {
+//        @BindView(R.id.iv_movie_poster) ImageView posterIv;
+//        @BindView(R.id.tv_original_title) TextView OriginalTitle;
+//
+//
+//        public ViewHolder(View itemView) {
+//            super(itemView);
+//            ButterKnife.bind(this, itemView);
+//
+//           /* itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intent = new Intent(context, DetailsActivity.class);
+//                    Movie movie = getCurrentMovie(getAdapterPosition());
+//                    intent.putExtra(EXTRA_MOVIE, movie);
+//                    context.startActivity(intent);
+//                }
+//            });*/
+//        }
+//    }
 
     private MovieModel getCurrentMovie(int adapterPosition) {
 
@@ -122,5 +183,35 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
 
         return movie;
     }
+
+
+    // Showing popup menu when tapping on 3 dots
+    private void showPopupMenu(View view) {
+        // inflate menu
+        PopupMenu popup = new PopupMenu(context, view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_movie, popup.getMenu());
+        popup.setOnMenuItemClickListener(new FavouriteAdapter.MyMenuItemClickListener());
+        popup.show();
+    }
+
+    // Click listener for popup menu items
+    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+
+        public MyMenuItemClickListener() {
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.action_add_favourite:
+                    Toast.makeText(context, "Here will be the Favourite menu", Toast.LENGTH_SHORT).show();
+                    return true;
+                default:
+            }
+            return false;
+        }
+    }
+
 
 }
