@@ -1,154 +1,126 @@
 package com.example.csontosmnika.popularmovies.adapters;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.database.Cursor;
+        import android.support.v7.widget.RecyclerView;
+        import android.view.LayoutInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.ImageView;
 
-import android.content.Context;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+        import com.squareup.picasso.Picasso;
+        import com.example.csontosmnika.popularmovies.DetailsActivity;
+        import com.example.csontosmnika.popularmovies.R;
+        import com.example.csontosmnika.popularmovies.QueryUtils;
+        import com.example.csontosmnika.popularmovies.data.MovieContract.MovieEntry;
+        import com.example.csontosmnika.popularmovies.models.MovieModel;
 
-import com.example.csontosmnika.popularmovies.R;
-import com.example.csontosmnika.popularmovies.models.MovieModel;
-import com.squareup.picasso.Picasso;
+        import java.util.List;
 
-import java.util.ArrayList;
-import java.util.List;
+        import butterknife.BindView;
+        import butterknife.ButterKnife;
 
 
-public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.MovieAdapterViewHolder> {
+public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.ViewHolder> {
+    private static final String EXTRA_MOVIE = "movie";
+    private Context context;
+    private Cursor cursor;
 
     public interface OnItemClickListener {
         void onItemClick(MovieModel item);
     }
 
-    private Context mContext;
-    private List<MovieModel> mMovies;
     private final OnItemClickListener listener;
 
-    // Define viewholder
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
-
-        public CardView cardView;
-        public ImageView moviePosterView;
-        public TextView movieTitleView;
-        public ImageView movieOverflowView;
-
-        public MovieAdapterViewHolder(View itemView) {
-            super(itemView);
-
-            cardView = itemView.findViewById(R.id.cv_movie_item);
-            moviePosterView = itemView.findViewById(R.id.iv_movie_poster);
-            movieTitleView = itemView.findViewById(R.id.tv_movie_title);
-            movieOverflowView = itemView.findViewById(R.id.iv_overflow);
-        }
-
-    }
-
-
-    public FavouriteAdapter(Context context, List<MovieModel> movies, OnItemClickListener listener) {
-        this.mContext = context;
-        this.mMovies = movies;
+    public FavouriteAdapter(Context context, FavouriteAdapter.OnItemClickListener listener) {
+        this.context = context;
         this.listener = listener;
     }
 
     @Override
-    public FavouriteAdapter.MovieAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        final Context context = viewGroup.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.activity_main_item, viewGroup, false);
-
-        return new MovieAdapterViewHolder(view);
+    public FavouriteAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.activity_main_item, parent, false);
+        return new ViewHolder(view);
     }
 
-    // Involves populating data into the item through holder
     @Override
-    public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(FavouriteAdapter.ViewHolder holder, int position) {
+        if (cursor == null || cursor.getCount() == 0) {
+            return;
+        }
+        cursor.moveToPosition(position);
+        String posterUriString = cursor.getString(cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_POSTER_PATH));
+        String originaltitle = cursor.getString(cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_MOVIE_TITLE));
 
-        final MovieModel movie = mMovies.get(position);
-        String originalTitle = String.valueOf(movie.getOriginalTitle());
-        String voteString = String.valueOf(movie.getVoteAverage());
+        MovieModel movie = getCurrentMovie(position);
 
-        holder.movieTitleView.setText(originalTitle);
-
-        Picasso.with(mContext)
+        Picasso.with(context)
                 .load(movie.getImageUriString())
-                .into(holder.moviePosterView);
-
-
-        holder.moviePosterView.setOnClickListener(new View.OnClickListener() {
-                                                      @Override
-                                                      public void onClick(View v) {
-                                                          listener.onItemClick(movie);
-                                                      }
-                                                  }
-        );
-
-
-        holder.movieTitleView.setOnClickListener(new View.OnClickListener() {
-                                                     @Override
-                                                     public void onClick(View v) {
-                                                         listener.onItemClick(movie);
-                                                     }
-                                                 }
-        );
-
-
-        holder.movieOverflowView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopupMenu(view);
-            }
-        });
-
+                .into(holder.posterIv);
 
     }
 
-
-    // Returns the total count of items
     @Override
     public int getItemCount() {
-        if (null == mMovies) return 0;
-        return mMovies.size();
-    }
-
-    // Set the actual movie list into the recyclerview on the activity
-    public void setMovieList(List<MovieModel> movieList) {
-        mMovies = new ArrayList<>();
-        notifyDataSetChanged();
-    }
-
-    // Showing popup menu when tapping on 3 dots
-    private void showPopupMenu(View view) {
-        // inflate menu
-        PopupMenu popup = new PopupMenu(mContext, view);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_movie, popup.getMenu());
-        popup.setOnMenuItemClickListener(new MyMenuItemClickListener());
-        popup.show();
-    }
-
-    // Click listener for popup menu items
-    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
-        public MyMenuItemClickListener() {
+        if (cursor == null) {
+            return 0;
         }
+        return cursor.getCount();
+    }
 
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.action_add_favourite:
-                    Toast.makeText(mContext, "Here will be the Favourite menu", Toast.LENGTH_SHORT).show();
-                    return true;
-                default:
-            }
-            return false;
+    public void swapCursor(Cursor cursor) {
+        this.cursor = cursor;
+        if (cursor != null) {
+            notifyDataSetChanged();
         }
     }
 
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.iv_movie_poster)
+        ImageView posterIv;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+
+           /* itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, DetailsActivity.class);
+                    Movie movie = getCurrentMovie(getAdapterPosition());
+                    intent.putExtra(EXTRA_MOVIE, movie);
+                    context.startActivity(intent);
+                }
+            });*/
+        }
+    }
+
+    private MovieModel getCurrentMovie(int adapterPosition) {
+
+        cursor.moveToPosition(adapterPosition);
+        MovieModel movie = new MovieModel();
+        String movieId = cursor.getString(cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_MOVIE_ID));
+        movie.setId(Integer.valueOf(movieId));
+
+        String movieTitle = cursor.getString(cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_MOVIE_TITLE));
+        movie.setOriginalTitle(movieTitle);
+
+        String moviePosterUriString = cursor.getString(cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_POSTER_PATH));
+        movie.setPosterPath(moviePosterUriString);
+
+        String movieBackgroundUriString = cursor.getString(cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_BACKDROP_PATH));
+        movie.setBackdropPath(movieBackgroundUriString);
+
+        String movieReleaseData = cursor.getString(cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_RELEASE_DATE));
+        movie.setReleaseDate(movieReleaseData);
+
+        String movieRate = cursor.getString(cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_USER_RATING));
+        movie.setVoteAverage(Float.valueOf(movieRate));
+
+        String movieOverview = cursor.getString(cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_OVERVIEW));
+        movie.setOverview(movieOverview);
+
+        return movie;
+    }
 
 }

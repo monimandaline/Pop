@@ -2,6 +2,7 @@ package com.example.csontosmnika.popularmovies;
 
 import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.res.Resources;
@@ -9,7 +10,6 @@ import android.database.Cursor;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -52,7 +52,7 @@ import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDb
 // Launchmode: https://inthecheesefactory.com/blog/understand-android-activity-launchmode/en
 
 public class MainActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<List<MovieModel>> {
+        LoaderManager.LoaderCallbacks {
 
 
     private String THEMOVIEDB_URL;
@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int ID_FAVOURITE_LOADER = 2;
 
     private List<MovieModel> movies = new ArrayList<>();
+    private Cursor favouriteMovies;
 
     private MovieAdapter movieAdapter;
     private FavouriteAdapter favouriteAdapter;
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements
     private TextView originalTitle;
     public MenuItem mMenuItem;
 
+    private EndlessScrollListener endlessSrcollListener;
     static final String DETAILS = "details";
 
     GridLayoutManager layoutManager;
@@ -82,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
         setContentView(R.layout.activity_main);
-
 
 
         //Assign the views
@@ -99,6 +100,19 @@ public class MainActivity extends AppCompatActivity implements
 
         layoutManager = new GridLayoutManager(this, spanCount);
 
+
+       /*endlessSrcollListener = new EndlessScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int current_page) {
+                // Load the next page, and append it to list (page variable is incremented in EndlessScrollListener)
+                loadNextDataFromApi(current_page);
+            }
+        };
+        // Endles list just for movie api
+        RecyclerView.addOnScrollListener(endlessSrcollListener);
+*/
+
+
         if (savedState == null) {
             currentLoaderId = ID_THEMOVIEDB_LOADER;
             THEMOVIEDB_URL = POPULAR_MOVIES;
@@ -110,45 +124,50 @@ public class MainActivity extends AppCompatActivity implements
         RecyclerView.setLayoutManager(layoutManager);
 
 
+        // Listener for onClick Movie
+        MovieAdapter.OnItemClickListener listener = new MovieAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(MovieModel movie) {
+                Intent movieDetailsIntent = new Intent(MainActivity.this, DetailsActivity.class);
+                movieDetailsIntent.putExtra(DETAILS, movie);
+                startActivity(movieDetailsIntent);
+            }
+        };
+
+        movieAdapter = new MovieAdapter(this, movies, listener);
+
+
+
+        // Listener for onClick Favourite
+        FavouriteAdapter.OnItemClickListener listener2 = new FavouriteAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(MovieModel movie) {
+                Intent movieDetailsIntent = new Intent(MainActivity.this, DetailsActivity.class);
+                movieDetailsIntent.putExtra(DETAILS, movie);
+                startActivity(movieDetailsIntent);
+            }
+        };
+
+        favouriteAdapter = new FavouriteAdapter(this, listener2);
 
         if (optionMenu != "FAVOURITE") {
 
-            // Listener for onClick Movie
-            MovieAdapter.OnItemClickListener listener = new MovieAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(MovieModel movie) {
-                    Intent movieDetailsIntent = new Intent(MainActivity.this, DetailsActivity.class);
-                    movieDetailsIntent.putExtra(DETAILS, movie);
-                    startActivity(movieDetailsIntent);
-                }
-            };
-
-            movieAdapter = new MovieAdapter(this, movies, listener);
             RecyclerView.setAdapter(movieAdapter);
 
             // Endles list just for movie api
-            RecyclerView.addOnScrollListener(new EndlessScrollListener(layoutManager) {
+           /* RecyclerView.addOnScrollListener(new EndlessScrollListener(layoutManager) {
                 @Override
                 public void onLoadMore(int current_page) {
                     // Load the next page, and append it to list (page variable is incremented in EndlessScrollListener)
                     loadNextDataFromApi(current_page);
                 }
-            });
+            });*/
         } else {
 
-            // Listener for onClick Favourite
-            FavouriteAdapter.OnItemClickListener listener = new FavouriteAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(MovieModel movie) {
-                    Intent movieDetailsIntent = new Intent(MainActivity.this, DetailsActivity.class);
-                    movieDetailsIntent.putExtra(DETAILS, movie);
-                    startActivity(movieDetailsIntent);
-                }
-            };
-            favouriteAdapter = new FavouriteAdapter(this, movies, listener);
             RecyclerView.setAdapter(favouriteAdapter);
 
         }
+
 
         // Get a reference to the ConnectivityManager to check state of network connectivity
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -204,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-   // Just from API
+    // Just from API
     public void loadNextDataFromApi(int offset) {
         // Send an API request to retrieve appropriate paginated data
         //  --> Send the request including an offset value (i.e `page`) as a query parameter.
@@ -224,10 +243,9 @@ public class MainActivity extends AppCompatActivity implements
 
 
     @Override
-    public Loader<List<MovieModel>> onCreateLoader(int id, Bundle args) {
+    public Loader onCreateLoader(int id, Bundle args) {
 
-
-        if (id == ID_THEMOVIEDB_LOADER ) {
+        if (id == ID_THEMOVIEDB_LOADER) {
             //return new MovieLoader(this, urlPath);
             return new MovieLoader(this, THEMOVIEDB_URL + page);
         } else if (id == ID_FAVOURITE_LOADER) {
@@ -247,35 +265,41 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLoadFinished(Loader<List<MovieModel>> loader, List<MovieModel> movies) {
+    public void onLoadFinished(Loader loader, Object movies)
+
+    {
 
         //Hides the progress bar
         progressBar.setVisibility(View.GONE);
 
         if (loader.getId() == ID_THEMOVIEDB_LOADER) {
 
+            RecyclerView.setAdapter(movieAdapter);
+
             // If the recent page is the first, clear the adapter of previous movie data. Every other case: the loader will add elements to the list (endless scroll up/down)
             if (page == 1) {
                 movieAdapter.setMovieList(null);
             }
             // If there is a valid list of movies, then add them to the adapter's data set.
-            if (movies != null && !movies.isEmpty()) {
+            if (movies != null && movies instanceof List && !((List) movies).isEmpty()) {
                 emptyStateTextView.setVisibility(View.GONE);
-                movieAdapter.setMovieList(movies);
+                movieAdapter.setMovieList((List) movies);
                 movieAdapter.notifyDataSetChanged();
 
             } else {
                 // Set empty state text
                 emptyStateTextView.setText(R.string.no_movies);
             }
-        } else
-        { //Favourite:  ?? What should I do
+
+        } else {
+            RecyclerView.setAdapter(favouriteAdapter);
+            favouriteAdapter.swapCursor((Cursor) movies);
 
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<List<MovieModel>> loader) {
+    public void onLoaderReset(Loader loader) {
         movieAdapter.setMovieList(null);
     }
 
@@ -319,6 +343,7 @@ public class MainActivity extends AppCompatActivity implements
                     THEMOVIEDB_URL = POPULAR_MOVIES + page;
                     optionMenu = "POPULAR";
                     setTitle(R.string.popular_movies_menu_item);
+                    //endlessSrcollListener.resetState();
                 }
                 currentLoaderId = ID_THEMOVIEDB_LOADER;
                 getLoaderManager().restartLoader(ID_THEMOVIEDB_LOADER, null, this);
@@ -336,6 +361,7 @@ public class MainActivity extends AppCompatActivity implements
                     THEMOVIEDB_URL = TOP_RATED_MOVIES + page;
                     optionMenu = "TOP_RATED";
                     setTitle(R.string.top_rated_movies_menu_item);
+                   // endlessSrcollListener.resetState();
                 }
                 currentLoaderId = ID_THEMOVIEDB_LOADER;
                 getLoaderManager().restartLoader(ID_THEMOVIEDB_LOADER, null, this);
@@ -354,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements
                     setTitle(R.string.favourite_movies_menu_item);
                 }
                 currentLoaderId = ID_FAVOURITE_LOADER;
-                // TODO: loader hívás
+                getLoaderManager().restartLoader(ID_FAVOURITE_LOADER, null, this);
                 return true;
 
             default:
