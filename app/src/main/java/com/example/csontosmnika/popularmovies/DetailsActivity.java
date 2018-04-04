@@ -196,9 +196,8 @@ public class DetailsActivity extends AppCompatActivity {
             // Call the ContentResolver to delete the product at the given content URI.
             // Pass in null for the selection and selection args because the mCurrentProductUri
             // content URI already identifies the product that we want.
-            int rowsDeleted = getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendEncodedPath(MOVIE_ID).build(), null, null);
-
-            // Show a toast message depending on whether or not the delete was successful.
+           int rowsDeleted = getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendEncodedPath(MOVIE_ID).build(), null, null);
+                    // Show a toast message depending on whether or not the delete was successful.
             if (rowsDeleted == 0) {
                 // If no rows were deleted, then there was an error with the delete.
                 Toast.makeText(this, getString(R.string.editor_delete_movie_failed),
