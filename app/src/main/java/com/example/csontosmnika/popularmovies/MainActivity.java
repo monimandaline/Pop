@@ -268,9 +268,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(Loader loader, Object movies)
 
-    {
-
-        //Hides the progress bar
+    {//  Hides the progress bar
         progressBar.setVisibility(View.GONE);
 
         if (loader.getId() == ID_THEMOVIEDB_LOADER) {
