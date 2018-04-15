@@ -1,5 +1,6 @@
 package com.example.csontosmnika.popularmovies;
 
+import android.content.AsyncTaskLoader;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -30,13 +31,18 @@ import com.example.csontosmnika.popularmovies.data.MovieDbHelper;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.csontosmnika.popularmovies.data.MovieProvider.haveDeletedAnItem;
+
 // Parceler guideline: https://guides.codepath.com/android/Using-Parceler, https://github.com/codepath/android_guides/wiki/Using-Parceler
 // Autofit column: https://stackoverflow.com/questions/33575731/gridlayoutmanager-how-to-auto-fit-columns
 // Animation: https://stackoverflow.com/questions/8720626/android-fade-in-and-fade-out-with-imageview
+
+// videó lejátszás, LAra: https://stackoverflow.com/questions/1572107/android-intent-for-playing-video
 
 //Mentor suggestion: http://jakewharton.github.io/butterknife/
 
@@ -58,7 +64,7 @@ public class DetailsActivity extends AppCompatActivity {
     private Context mContext ;
     SQLiteDatabase mSqLiteDatabase ;
     private boolean mIsFavoriteMovie;
-    private MovieModel MovieDetails;
+    public MovieModel MovieDetails;
 
     private Uri mCurrentProductUri;
 
@@ -190,7 +196,7 @@ public class DetailsActivity extends AppCompatActivity {
 
 
     private void deleteMovieFromFavorites() {
-        // Only perform the delete if this is an existing product.
+        // Only perform the delete if this is an existing movie.
 
       //  if (MovieContract.MovieEntry.CONTENT_URI != null) {
             // Call the ContentResolver to delete the product at the given content URI.
@@ -199,10 +205,13 @@ public class DetailsActivity extends AppCompatActivity {
            int rowsDeleted = getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendEncodedPath(MOVIE_ID).build(), null, null);
                     // Show a toast message depending on whether or not the delete was successful.
             if (rowsDeleted == 0) {
+                haveDeletedAnItem = false;
                 // If no rows were deleted, then there was an error with the delete.
                 Toast.makeText(this, getString(R.string.editor_delete_movie_failed),
                         Toast.LENGTH_SHORT).show();
             } else {
+
+                haveDeletedAnItem = true;
                 // Otherwise, the delete was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_delete_movie_successful),
                         Toast.LENGTH_SHORT).show();

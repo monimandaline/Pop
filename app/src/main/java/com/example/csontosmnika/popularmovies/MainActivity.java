@@ -38,6 +38,7 @@ import java.util.List;
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.POPULAR_MOVIES;
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.TOP_RATED_MOVIES;
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.page;
+import static com.example.csontosmnika.popularmovies.data.MovieProvider.haveDeletedAnItem;
 
 
 // Used guidelines:
@@ -221,6 +222,10 @@ public class MainActivity extends AppCompatActivity implements
             setTitle(R.string.favourite_movies_menu_item);
         }
 
+        if (haveDeletedAnItem == true)
+        {
+            getSupportLoaderManager().destroyLoader(ID_FAVOURITE_LOADER);
+        }
     }
 
     // Just from API
@@ -345,6 +350,7 @@ public class MainActivity extends AppCompatActivity implements
                     //endlessSrcollListener.resetState();
                 }
                 currentLoaderId = ID_THEMOVIEDB_LOADER;
+                getSupportLoaderManager().destroyLoader(ID_THEMOVIEDB_LOADER);
                 getLoaderManager().restartLoader(ID_THEMOVIEDB_LOADER, null, this);
                 return true;
 
@@ -363,6 +369,7 @@ public class MainActivity extends AppCompatActivity implements
                    // endlessSrcollListener.resetState();
                 }
                 currentLoaderId = ID_THEMOVIEDB_LOADER;
+                getSupportLoaderManager().destroyLoader(ID_THEMOVIEDB_LOADER);
                 getLoaderManager().restartLoader(ID_THEMOVIEDB_LOADER, null, this);
                 return true;
 
