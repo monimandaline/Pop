@@ -102,16 +102,15 @@ public class MainActivity extends AppCompatActivity implements
         layoutManager = new GridLayoutManager(this, spanCount);
 
 
-       /*endlessSrcollListener = new EndlessScrollListener(layoutManager) {
+       endlessSrcollListener = new EndlessScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int current_page) {
                 // Load the next page, and append it to list (page variable is incremented in EndlessScrollListener)
                 loadNextDataFromApi(current_page);
             }
         };
-        // Endles list just for movie api
-        RecyclerView.addOnScrollListener(endlessSrcollListener);
-*/
+
+
 
 
         if (savedState == null) {
@@ -156,13 +155,8 @@ public class MainActivity extends AppCompatActivity implements
             RecyclerView.setAdapter(movieAdapter);
 
             // Endles list just for movie api
-           /* RecyclerView.addOnScrollListener(new EndlessScrollListener(layoutManager) {
-                @Override
-                public void onLoadMore(int current_page) {
-                    // Load the next page, and append it to list (page variable is incremented in EndlessScrollListener)
-                    loadNextDataFromApi(current_page);
-                }
-            });*/
+            RecyclerView.addOnScrollListener(endlessSrcollListener);
+
         } else {
 
             RecyclerView.setAdapter(favouriteAdapter);
@@ -204,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements
         outState.putString("SORT_URL", THEMOVIEDB_URL);
         outState.putString("PAGE", String.valueOf(page));
         outState.putString("MENU_POPULAR", String.valueOf(optionMenu));
+       // outState.putInt("CURRENT_LOADER_ID",currentLoaderId );
     }
 
     @Override
@@ -213,13 +208,17 @@ public class MainActivity extends AppCompatActivity implements
         THEMOVIEDB_URL = savedState.getString("SORT_URL");
         page = Integer.parseInt(savedState.getString("PAGE"));
         optionMenu = savedState.getString("MENU_POPULAR");
+       // currentLoaderId = savedState.getInt("CURRENT_LOADER_ID");
 
         if (optionMenu == "POPULAR") {
             setTitle(R.string.popular_movies_menu_item);
+            currentLoaderId = ID_THEMOVIEDB_LOADER;
         } else if (optionMenu == "TOP_RATED") {
             setTitle(R.string.top_rated_movies_menu_item);
+            currentLoaderId = ID_THEMOVIEDB_LOADER;
         } else if (optionMenu == "FAVOURITE") {
             setTitle(R.string.favourite_movies_menu_item);
+            currentLoaderId = ID_FAVOURITE_LOADER;
         }
 
         if (haveDeletedAnItem == true)
@@ -236,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
         page = offset;
-        getLoaderManager().restartLoader(0, null, MainActivity.this);
+        getLoaderManager().restartLoader(ID_THEMOVIEDB_LOADER, null, MainActivity.this);
     }
 
 
@@ -347,7 +346,9 @@ public class MainActivity extends AppCompatActivity implements
                     THEMOVIEDB_URL = POPULAR_MOVIES + page;
                     optionMenu = "POPULAR";
                     setTitle(R.string.popular_movies_menu_item);
-                    //endlessSrcollListener.resetState();
+
+                    RecyclerView.addOnScrollListener(endlessSrcollListener);
+                    endlessSrcollListener.resetState();
                 }
 
                 currentLoaderId = ID_THEMOVIEDB_LOADER;
@@ -373,7 +374,8 @@ public class MainActivity extends AppCompatActivity implements
                     THEMOVIEDB_URL = TOP_RATED_MOVIES + page;
                     optionMenu = "TOP_RATED";
                     setTitle(R.string.top_rated_movies_menu_item);
-                   // endlessSrcollListener.resetState();
+                    RecyclerView.addOnScrollListener(endlessSrcollListener);
+                    endlessSrcollListener.resetState();
                 }
 
                 currentLoaderId = ID_THEMOVIEDB_LOADER;
@@ -397,6 +399,8 @@ public class MainActivity extends AppCompatActivity implements
                     // Favourite Movies
                     optionMenu = "FAVOURITE";
                     setTitle(R.string.favourite_movies_menu_item);
+
+                    RecyclerView.clearOnScrollListeners();
                 }
                 currentLoaderId = ID_FAVOURITE_LOADER;
                 getLoaderManager().restartLoader(ID_FAVOURITE_LOADER, null, this);

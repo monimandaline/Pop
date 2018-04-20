@@ -1,8 +1,10 @@
 package com.example.csontosmnika.popularmovies;
 
+import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -47,7 +50,7 @@ import static com.example.csontosmnika.popularmovies.data.MovieProvider.haveDele
 //Mentor suggestion: http://jakewharton.github.io/butterknife/
 
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity  implements  LoaderManager.LoaderCallbacks  {
 
     @BindView(R.id.tv_original_title)
     TextView originalTitleView;
@@ -91,11 +94,29 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
 
+        // Review/Trailer set
         ReviewRecyclerView = findViewById(R.id.rv_reviews);
         TrailerRecyclerView = findViewById(R.id.rv_trailers);
 
         reviewAdapter = new ReviewAdapter(new ArrayList<ReviewModel>());
         trailerAdapter = new TrailerAdapter(new ArrayList<TrailerModel>());
+
+        ReviewRecyclerView.setAdapter(reviewAdapter);
+        TrailerRecyclerView.setAdapter(trailerAdapter);
+
+        ReviewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        TrailerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        trailerAdapter.setOnItemClickListener(new TrailerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, TrailerModel trailer, ImageView imageView) {
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://www.youtube.com/watch?v="  + trailer.getKey()));
+                startActivity(intent);
+
+            }
+        });
 
         // Unwrapping the Parcel, get detail movie datas
         MovieDetails = (MovieModel) getIntent().getParcelableExtra(DETAILS);
@@ -159,7 +180,8 @@ public class DetailsActivity extends AppCompatActivity {
 
 
         // review/trailer loader
-
+       getLoaderManager().initLoader(ID_REVIEW_LOADER, null, this);
+       getLoaderManager().initLoader(ID_TRAILER_LOADER, null, this);
 
     }
 
@@ -242,7 +264,7 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
 
-    private class TrailerLoader extends AsyncTaskLoader<List<TrailerModel>> {
+    private static class TrailerLoader extends AsyncTaskLoader<List<TrailerModel>> {
 
         private String url;
 
@@ -269,7 +291,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-    public class ReviewLoader extends AsyncTaskLoader<List<ReviewModel>> {
+    public static class ReviewLoader extends AsyncTaskLoader<List<ReviewModel>> {
 
 
         String url;
@@ -320,6 +342,12 @@ public class DetailsActivity extends AppCompatActivity {
             trailerAdapter.setTrailerList((List<TrailerModel>) o);
         }
 
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+       reviewAdapter.setReviewList(null);
+       trailerAdapter.setTrailerList(null);
     }
 
 

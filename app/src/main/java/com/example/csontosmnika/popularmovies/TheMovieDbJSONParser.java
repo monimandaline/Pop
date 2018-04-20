@@ -114,7 +114,7 @@ public class TheMovieDbJSONParser {
             for (int i = 0; i <= resultsArray.length(); i++) {
                 JSONObject trailerObject = resultsArray.getJSONObject(i);
                 String trailerName = trailerObject.getString("name");
-                String trailerKey = "https://www.youtube.com/watch?v=" + trailerObject.getString("key");
+                String trailerKey =  trailerObject.getString("key");
                 TrailerModel trailer = new TrailerModel(trailerName, trailerKey);
                 trailers.add(trailer);
 
