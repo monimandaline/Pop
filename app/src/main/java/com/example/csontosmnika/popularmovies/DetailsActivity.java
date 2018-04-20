@@ -22,6 +22,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.csontosmnika.popularmovies.adapters.ReviewAdapter;
 import com.example.csontosmnika.popularmovies.adapters.TrailerAdapter;
 import com.example.csontosmnika.popularmovies.data.MovieContract;
 import com.example.csontosmnika.popularmovies.models.MovieModel;
@@ -29,6 +30,7 @@ import com.example.csontosmnika.popularmovies.models.ReviewModel;
 import com.example.csontosmnika.popularmovies.models.TrailerModel;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -67,6 +69,10 @@ public class DetailsActivity extends AppCompatActivity {
 
     public String MOVIE_ID;
 
+    private int currentLoaderId;
+    private static final int ID_REVIEW_LOADER = 1;
+    private static final int ID_TRAILER_LOADER = 2;
+
     static final String DETAILS = "details";
 
     private Context mContext;
@@ -76,6 +82,9 @@ public class DetailsActivity extends AppCompatActivity {
 
     private Uri mCurrentProductUri;
 
+    private ReviewAdapter reviewAdapter;
+    private TrailerAdapter trailerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +93,9 @@ public class DetailsActivity extends AppCompatActivity {
 
         ReviewRecyclerView = findViewById(R.id.rv_reviews);
         TrailerRecyclerView = findViewById(R.id.rv_trailers);
+
+        reviewAdapter = new ReviewAdapter(new ArrayList<ReviewModel>());
+        trailerAdapter = new TrailerAdapter(new ArrayList<TrailerModel>());
 
         // Unwrapping the Parcel, get detail movie datas
         MovieDetails = (MovieModel) getIntent().getParcelableExtra(DETAILS);
@@ -173,21 +185,14 @@ public class DetailsActivity extends AppCompatActivity {
 
 
     public static boolean isFavoriteMovie(int movieId, Context context) {
-        //SQLiteDatabase sqLiteDatabase = new MovieDbHelper(context).getWritableDatabase();
-
-        //final String SELECTION = movieId;
-
-        String[] moviIdString = new String[]{String.valueOf(movieId)};
+           String[] moviIdString = new String[]{String.valueOf(movieId)};
 
         Cursor cursor = context.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI, null, "movie_id = ?", moviIdString, null);
         if (cursor.getCount() != 0) {
 
-            //cursor.close();
-            return true;
+               return true;
         }
-        // cursor.close();
-        return false;
-
+              return false;
 
     }
 
@@ -239,8 +244,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     private class TrailerLoader extends AsyncTaskLoader<List<TrailerModel>> {
 
-        //Query URL todo: kiszedni thMovieApiba
-        private String url = "https://api.themoviedb.org/3/movie/" + String.valueOf(MovieDetails.getId()) + "/videos?api_key=b2fad85553a59df1194eb4851cdc2b6e&language=en-US";
+        private String url;
 
         public TrailerLoader(Context context, String url) {
             super(context);
@@ -267,8 +271,8 @@ public class DetailsActivity extends AppCompatActivity {
 
     public class ReviewLoader extends AsyncTaskLoader<List<ReviewModel>> {
 
-        //Query URL todo: kiszedni thMovieApiba
-        String url = "https://api.themoviedb.org/3/movie/" + String.valueOf(MovieDetails.getId()) + "/reviews?api_key=b2fad85553a59df1194eb4851cdc2b6e&language=en-US&page=1";
+
+        String url;
 
         public ReviewLoader(Context context, String url) {
             super(context);
@@ -281,7 +285,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
 
         @Override
-        public List<ReviewLoader> loadInBackground() {
+        public List<ReviewModel> loadInBackground() {
             if (url == null) {
                 return null;
             }
@@ -295,14 +299,26 @@ public class DetailsActivity extends AppCompatActivity {
 
     public Loader onCreateLoader(int id, Bundle args) {
 
-       return null;
+        //Query URL todo: kiszedni thMovieApiba
+        String url_review = "https://api.themoviedb.org/3/movie/" + String.valueOf(MovieDetails.getId()) + "/reviews?api_key=b2fad85553a59df1194eb4851cdc2b6e&language=en-US&page=1";
+        String url_trailer = "https://api.themoviedb.org/3/movie/" + String.valueOf(MovieDetails.getId()) + "/videos?api_key=b2fad85553a59df1194eb4851cdc2b6e&language=en-US";
 
+        if (id == ID_REVIEW_LOADER) {
+            return new ReviewLoader(this, url_review);
+        } else if (id == ID_TRAILER_LOADER) {
+            return new TrailerLoader(this, url_trailer);
+        }
+        return null;
     }
 
-    public void onLoadFinished(Loader loader, Object movies)
+    public void onLoadFinished(Loader loader, Object o) {
+        int id = loader.getId();
 
-    {   //        TrailerAdapter.notifyDataSetChanged();
-
+        if (id == ID_REVIEW_LOADER) {
+            reviewAdapter.setReviewList((List<ReviewModel>) o);
+        } else if (id == ID_TRAILER_LOADER) {
+            trailerAdapter.setTrailerList((List<TrailerModel>) o);
+        }
 
     }
 
