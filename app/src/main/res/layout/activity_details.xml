@@ -108,6 +108,39 @@
             app:rippleColor="@color/colorVibrant" />
 
 
+        <TextView
+            style="@style/styleDetailMainTitle"
+            tools:text="Reviews"
+            android:text="Review"/>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="14dp" />
+
+
+        <TextView
+            style="@style/styleDetailMainTitle"
+            tools:text="Trailers"
+            android:text="Trailers"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_trailers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
     </LinearLayout>
 
 

@@ -53,6 +53,8 @@ public class MovieProvider extends ContentProvider {
     /** Database helper object */
     private MovieDbHelper mDbHelper;
 
+    static public boolean haveDeletedAnItem = false;
+
     @Override
     public boolean onCreate() {
         mDbHelper = new MovieDbHelper(getContext());
@@ -220,7 +222,7 @@ public class MovieProvider extends ContentProvider {
                 break;
             case MOVIE_ID:
                 // Delete a single row given by the ID in the URI
-                selection = MovieEntry._ID + "=?";
+                selection = MovieEntry.COLUMN_MOVIE_ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
                 rowsDeleted = database.delete(MovieEntry.TABLE_NAME, selection, selectionArgs);
                 break;

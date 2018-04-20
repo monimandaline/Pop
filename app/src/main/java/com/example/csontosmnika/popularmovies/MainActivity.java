@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (loader.getId() == ID_THEMOVIEDB_LOADER) {
 
-            RecyclerView.setAdapter(movieAdapter);
+            //RecyclerView.setAdapter(movieAdapter);
 
             // If the recent page is the first, clear the adapter of previous movie data. Every other case: the loader will add elements to the list (endless scroll up/down)
             if (page == 1) {
@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements
             }
 
         } else {
-            RecyclerView.setAdapter(favouriteAdapter);
+            //RecyclerView.setAdapter(favouriteAdapter);
             favouriteAdapter.swapCursor((Cursor) movies);
 
         }
@@ -349,9 +349,16 @@ public class MainActivity extends AppCompatActivity implements
                     setTitle(R.string.popular_movies_menu_item);
                     //endlessSrcollListener.resetState();
                 }
+
                 currentLoaderId = ID_THEMOVIEDB_LOADER;
-                getSupportLoaderManager().destroyLoader(ID_THEMOVIEDB_LOADER);
+
+                //getSupportLoaderManager().destroyLoader(ID_THEMOVIEDB_LOADER);
+
                 getLoaderManager().restartLoader(ID_THEMOVIEDB_LOADER, null, this);
+
+                movieAdapter.setMovieList(null);
+                RecyclerView.setAdapter(movieAdapter);
+
                 return true;
 
             case R.id.top_rated_menu_item:
@@ -368,9 +375,15 @@ public class MainActivity extends AppCompatActivity implements
                     setTitle(R.string.top_rated_movies_menu_item);
                    // endlessSrcollListener.resetState();
                 }
+
                 currentLoaderId = ID_THEMOVIEDB_LOADER;
-                getSupportLoaderManager().destroyLoader(ID_THEMOVIEDB_LOADER);
+
+                //getSupportLoaderManager().destroyLoader(ID_THEMOVIEDB_LOADER);
                 getLoaderManager().restartLoader(ID_THEMOVIEDB_LOADER, null, this);
+
+                movieAdapter.setMovieList(null);
+                RecyclerView.setAdapter(movieAdapter);
+
                 return true;
 
 
@@ -387,6 +400,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 currentLoaderId = ID_FAVOURITE_LOADER;
                 getLoaderManager().restartLoader(ID_FAVOURITE_LOADER, null, this);
+                RecyclerView.setAdapter(favouriteAdapter);
                 return true;
 
             default:

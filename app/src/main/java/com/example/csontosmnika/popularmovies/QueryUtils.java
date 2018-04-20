@@ -2,6 +2,10 @@ package com.example.csontosmnika.popularmovies;
 
 import android.util.Log;
 
+import com.example.csontosmnika.popularmovies.models.MovieModel;
+import com.example.csontosmnika.popularmovies.models.ReviewModel;
+import com.example.csontosmnika.popularmovies.models.TrailerModel;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,8 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
-
-import com.example.csontosmnika.popularmovies.models.MovieModel;
 
 // Helper methods related to requesting and receiving movie data from theMovie.org.
 
@@ -49,6 +51,50 @@ public class QueryUtils {
         // Return the list of Movies
         return movies;
     }
+
+
+    // Query the Movie DB API dataset and return a list of {@link ReviewModel} objects.
+    public static List<ReviewModel> fetchReviewData(String requestUrl) {
+        // Create URL object
+        URL url = createUrl(requestUrl);
+
+        // Perform HTTP request to the URL and receive a JSON response back
+        String jsonResponse = null;
+        try {
+            jsonResponse = makeHttpRequest(url);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Problem making the HTTP request.", e);
+        }
+
+        // Extract relevant fields from the JSON response and create a list of movies
+        List<ReviewModel> reviews = TheMovieDbJSONParser.json2Reviews(jsonResponse);
+
+        // Return the list of Reviews
+        return reviews;
+    }
+
+
+    // Query the Movie DB API dataset and return a list of {@link TrailerModel} objects.
+    public static List<TrailerModel> fetchTrailerData(String requestUrl) {
+        // Create URL object
+        URL url = createUrl(requestUrl);
+
+        // Perform HTTP request to the URL and receive a JSON response back
+        String jsonResponse = null;
+        try {
+            jsonResponse = makeHttpRequest(url);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Problem making the HTTP request.", e);
+        }
+
+        // Extract relevant fields from the JSON response and create a list of movies
+        List<TrailerModel> trailers = TheMovieDbJSONParser.json2Trailers(jsonResponse);
+
+        // Return the list of Reviews
+        return trailers;
+    }
+
+
 
     // Returns new URL object from the given string URL.
     private static URL createUrl(String stringUrl) {

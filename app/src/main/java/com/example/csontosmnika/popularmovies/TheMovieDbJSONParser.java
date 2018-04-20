@@ -3,14 +3,16 @@ package com.example.csontosmnika.popularmovies;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.csontosmnika.popularmovies.models.MovieModel;
+import com.example.csontosmnika.popularmovies.models.ReviewModel;
+import com.example.csontosmnika.popularmovies.models.TrailerModel;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.example.csontosmnika.popularmovies.models.MovieModel;
 
 public class TheMovieDbJSONParser {
 
@@ -101,5 +103,50 @@ public class TheMovieDbJSONParser {
         // Return the list of movies
         return movies;
     }
+
+
+    public static ArrayList<TrailerModel> json2Trailers(String json) {
+        ArrayList<TrailerModel> trailers = new ArrayList<>();
+
+        try {
+            JSONObject rootTrailerJsonObject = new JSONObject(json);
+            JSONArray resultsArray = rootTrailerJsonObject.getJSONArray("results");
+            for (int i = 0; i <= resultsArray.length(); i++) {
+                JSONObject trailerObject = resultsArray.getJSONObject(i);
+                String trailerName = trailerObject.getString("name");
+                String trailerKey = "https://www.youtube.com/watch?v=" + trailerObject.getString("key");
+                TrailerModel trailer = new TrailerModel(trailerName, trailerKey);
+                trailers.add(trailer);
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return trailers;
+    }
+
+    public static ArrayList<ReviewModel> json2Reviews(String json) {
+        ArrayList<ReviewModel> reviews = new ArrayList<>();
+        try {
+            JSONObject reviewsRootJsonObject = new JSONObject(json);
+            JSONArray reviewsJsonArray = reviewsRootJsonObject.getJSONArray("results");
+            for (int i = 0; i <= reviewsJsonArray.length(); i++) {
+                JSONObject reviewJsonObject = reviewsJsonArray.getJSONObject(i);
+                String reviewAuthor = reviewJsonObject.getString("author");
+                String content = reviewJsonObject.getString("content");
+                ReviewModel review = new ReviewModel(reviewAuthor, content);
+                reviews.add(review);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return reviews;
+    }
+
+
 }
+
 
