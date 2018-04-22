@@ -5,12 +5,12 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.view.MenuInflater;
 import android.widget.Toast;
 
 import com.example.csontosmnika.popularmovies.R;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.page;
-
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
@@ -157,6 +156,5 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             return false;
         }
     }
-
 
 }

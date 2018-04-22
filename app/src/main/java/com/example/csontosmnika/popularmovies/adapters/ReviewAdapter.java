@@ -48,7 +48,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     @Override
     public int getItemCount() {
         if (null == reviews) return 0;
-        return reviews.size();
+        if (reviews.size() > 3)
+            return 3;
+        else
+            return reviews.size();
     }
 
     // Define viewholder

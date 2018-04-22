@@ -15,6 +15,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.YOUTUBE_IMAGE_URL;
+
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder> {
 
     public interface OnItemClickListener {
@@ -43,10 +45,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
         TrailerModel trailer = trailers.get(position);
 
         String nameString = String.valueOf(trailer.getName());
-        String thumbnailUrl = "http://img.youtube.com/vi/" + trailer.getKey() + "/1.jpg";
+        String thumbnailUrl = YOUTUBE_IMAGE_URL + trailer.getKey() + "/1.jpg";
         Picasso.with(holder.itemView.getContext())
                 .load(thumbnailUrl)
-                .placeholder(R.drawable.star_off) //todo placeholder image
+                .placeholder(R.drawable.placeholder)
                 .into(holder.trailerView);
         holder.trailerName.setText(nameString);
     }
@@ -55,7 +57,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     @Override
     public int getItemCount() {
         if (null == trailers) return 0;
-        return trailers.size();
+        if (trailers.size() > 5)
+            return 5;
+        else
+            return trailers.size();
     }
 
     // Define viewholder
