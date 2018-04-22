@@ -105,7 +105,7 @@ public class TheMovieDbJSONParser {
     }
 
 
-    public static ArrayList<TrailerModel> json2Trailers(String json) {
+    public static ArrayList<TrailerModel> jsonForTrailers(String json) {
         ArrayList<TrailerModel> trailers = new ArrayList<>();
 
         try {
@@ -126,7 +126,7 @@ public class TheMovieDbJSONParser {
         return trailers;
     }
 
-    public static ArrayList<ReviewModel> json2Reviews(String json) {
+    public static ArrayList<ReviewModel> jsonForReviews(String json) {
         ArrayList<ReviewModel> reviews = new ArrayList<>();
         try {
             JSONObject reviewsRootJsonObject = new JSONObject(json);

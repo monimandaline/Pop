@@ -10,10 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="4dp"
-        android:elevation="3dp"
-        android:foreground="?android:attr/selectableItemBackground"
-        card_view:cardCornerRadius="3dp">
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        card_view:cardBackgroundColor="@android:color/transparent"
+        card_view:cardCornerRadius="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,35 +24,12 @@
 
             <TextView
                 android:id="@+id/tv_review_author"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="4dp"
+                style="@style/styleDetailReviewTextAuthor"
                 android:text="Author"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textAllCaps="true"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorPrimaryDark"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"/>
-
+                />
             <TextView
                 android:id="@+id/tv_review_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="4dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="13sp"
+                style="@style/styleDetailReviewText"
                 tools:text="Review content" />
 
         </LinearLayout>

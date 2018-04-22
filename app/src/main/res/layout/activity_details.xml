@@ -81,19 +81,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <TextView
-            style="@style/styleDetailMainTitle"
-            android:id="@+id/tv_overview_title"
-            tools:text="Overview"
-            android:text="@string/overview_title"/>
-
-        <TextView
-            style="@style/styleDetailText"
-            android:id="@+id/tv_overview"
-            tools:text="Overview Text"/>
-
-
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/Button_Favorite"
             android:layout_width="55dp"
@@ -106,21 +93,18 @@
             app:fabSize="normal"
             app:backgroundTint="@color/colorAccent"
             app:rippleColor="@color/colorVibrant" />
-
-
         <TextView
             style="@style/styleDetailMainTitle"
-            tools:text="Reviews"
-            android:text="Review"/>
+            android:id="@+id/tv_overview_title"
+            tools:text="Overview"
+            android:text="@string/overview_title"/>
+
+        <TextView
+            style="@style/styleDetailText"
+            android:id="@+id/tv_overview"
+            tools:text="Overview Text"/>
 
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_reviews"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="14dp"
-            android:layout_marginRight="14dp" />
 
 
         <TextView
@@ -137,12 +121,27 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_trailers"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal"/>
 
         </RelativeLayout>
 
+        <TextView
+            style="@style/styleDetailMainTitle"
+            tools:text="Reviews"
+            android:text="Review"/>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="16dp"
+
+            />
+
+
+
     </LinearLayout>
-
-
-
 </ScrollView>

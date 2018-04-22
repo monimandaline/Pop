@@ -111,8 +111,6 @@ public class MainActivity extends AppCompatActivity implements
         };
 
 
-
-
         if (savedState == null) {
             currentLoaderId = ID_THEMOVIEDB_LOADER;
             THEMOVIEDB_URL = POPULAR_MOVIES;

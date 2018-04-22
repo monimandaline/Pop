@@ -39,13 +39,16 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.API_KEY;
+import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.MOVIE_DETAILS_URL;
+import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.YOUTUBE_URL;
 import static com.example.csontosmnika.popularmovies.data.MovieProvider.haveDeletedAnItem;
 
 // Parceler guideline: https://guides.codepath.com/android/Using-Parceler, https://github.com/codepath/android_guides/wiki/Using-Parceler
 // Autofit column: https://stackoverflow.com/questions/33575731/gridlayoutmanager-how-to-auto-fit-columns
 // Animation: https://stackoverflow.com/questions/8720626/android-fade-in-and-fade-out-with-imageview
 
-// videó lejátszás, LAra: https://stackoverflow.com/questions/1572107/android-intent-for-playing-video
+// video, Lara: https://stackoverflow.com/questions/1572107/android-intent-for-playing-video
 
 //Mentor suggestion: http://jakewharton.github.io/butterknife/
 
@@ -105,14 +108,16 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
         TrailerRecyclerView.setAdapter(trailerAdapter);
 
         ReviewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        TrailerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        LinearLayoutManager videoLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        TrailerRecyclerView.setLayoutManager(videoLayoutManager);
 
         trailerAdapter.setOnItemClickListener(new TrailerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, TrailerModel trailer, ImageView imageView) {
 
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("https://www.youtube.com/watch?v="  + trailer.getKey()));
+                intent.setData(Uri.parse(YOUTUBE_URL + trailer.getKey()));
                 startActivity(intent);
 
             }
@@ -126,21 +131,10 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
         MOVIE_ID = String.valueOf(MovieDetails.getId());
 
         if (isFavoriteMovie(MovieDetails.getId(), mContext)) {
-            /*String[] projection = {
-                    MovieContract.MovieEntry.COLUMN_POSTER_IMAGE
-            };
-            final String SELECTION = MovieContract.MovieEntry.COLUMN_ID + " = " + MovieDetails.getId();
-            Cursor cursor = mSqLiteDatabase.query(MovieContract.MovieEntry.TABLE_NAME,
-                    projection, SELECTION, null, null, null, null
-            );*/
-
 
             mIsFavoriteMovie = true;
             AddToFavoriteFloatingActionButton.setImageResource(R.drawable.star_on);
-            //cursor.moveToFirst();
-            //MovieDetails.setPosterImage(cursor.getBlob(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_POSTER_IMAGE)));
-            //cursor.close();
-        }
+          }
 
 
         String posterURL = MovieDetails.getBackdropUriString();
@@ -149,7 +143,10 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
                 .into(backdropView);
 
         float stars = (float) MovieDetails.getVoteAverage();
+
         voteAverageView.setText(String.valueOf(MovieDetails.getVoteAverage()));
+        voteAverageView.setText(String.format("%.2f", MovieDetails.getVoteAverage()));
+
         voteAverageBar.setRating(stars);
         originalTitleView.setText(MovieDetails.getOriginalTitle());
         releaseDateView.setText(MovieDetails.getReleaseDate());
@@ -227,11 +224,6 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
         values.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, MovieDetails.getOverview());
         values.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, MovieDetails.getPosterPath());
         values.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, MovieDetails.getBackdropPath());
-        /*Bitmap bitmap = ((BitmapDrawable)backdropView.getDrawable()).getBitmap();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-        byte[] image = outputStream.toByteArray();
-        values.put(MovieContract.MovieEntry.COLUMN_POSTER_IMAGE,image);*/
         getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
         Toast.makeText(this, getString(R.string.editor_insert_movie_successful),
                 Toast.LENGTH_SHORT).show();
@@ -240,11 +232,6 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
 
     private void deleteMovieFromFavorites() {
         // Only perform the delete if this is an existing movie.
-
-        //  if (MovieContract.MovieEntry.CONTENT_URI != null) {
-        // Call the ContentResolver to delete the product at the given content URI.
-        // Pass in null for the selection and selection args because the mCurrentProductUri
-        // content URI already identifies the product that we want.
         int rowsDeleted = getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendEncodedPath(MOVIE_ID).build(), null, null);
         // Show a toast message depending on whether or not the delete was successful.
         if (rowsDeleted == 0) {
@@ -322,8 +309,8 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
     public Loader onCreateLoader(int id, Bundle args) {
 
         //Query URL todo: kiszedni thMovieApiba
-        String url_review = "https://api.themoviedb.org/3/movie/" + String.valueOf(MovieDetails.getId()) + "/reviews?api_key=b2fad85553a59df1194eb4851cdc2b6e&language=en-US&page=1";
-        String url_trailer = "https://api.themoviedb.org/3/movie/" + String.valueOf(MovieDetails.getId()) + "/videos?api_key=b2fad85553a59df1194eb4851cdc2b6e&language=en-US";
+        String url_review = MOVIE_DETAILS_URL + String.valueOf(MovieDetails.getId()) + "/reviews?api_key=" + API_KEY + "&language=en-US&page=1";
+        String url_trailer = MOVIE_DETAILS_URL + String.valueOf(MovieDetails.getId()) + "/videos?api_key=" + API_KEY + "&language=en-US";
 
         if (id == ID_REVIEW_LOADER) {
             return new ReviewLoader(this, url_review);

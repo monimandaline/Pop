@@ -67,7 +67,7 @@ public class QueryUtils {
         }
 
         // Extract relevant fields from the JSON response and create a list of movies
-        List<ReviewModel> reviews = TheMovieDbJSONParser.json2Reviews(jsonResponse);
+        List<ReviewModel> reviews = TheMovieDbJSONParser.jsonForReviews(jsonResponse);
 
         // Return the list of Reviews
         return reviews;
@@ -88,7 +88,7 @@ public class QueryUtils {
         }
 
         // Extract relevant fields from the JSON response and create a list of movies
-        List<TrailerModel> trailers = TheMovieDbJSONParser.json2Trailers(jsonResponse);
+        List<TrailerModel> trailers = TheMovieDbJSONParser.jsonForTrailers(jsonResponse);
 
         // Return the list of Reviews
         return trailers;
