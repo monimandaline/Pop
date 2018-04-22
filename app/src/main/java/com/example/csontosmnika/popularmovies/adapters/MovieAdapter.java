@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.csontosmnika.popularmovies.DetailsActivity;
 import com.example.csontosmnika.popularmovies.R;
 import com.example.csontosmnika.popularmovies.data.AddFavourite;
 import com.example.csontosmnika.popularmovies.models.MovieModel;
@@ -104,7 +103,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         holder.movieOverflowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(view, movie.getId());
+                showPopupMenu(view, movie.getId(), movie);
             }
         });
 
@@ -132,12 +131,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     // Showing popup menu when tapping on 3 dots
-    private void showPopupMenu(View view, int MovieId) {
+    private void showPopupMenu(View view, int MovieId, MovieModel movieDetails) {
         // inflate menu
         PopupMenu popup = new PopupMenu(mContext, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_movie, popup.getMenu());
-        popup.setOnMenuItemClickListener(new MyMenuItemClickListener(MovieId));
+        popup.setOnMenuItemClickListener(new MyMenuItemClickListener(MovieId, movieDetails));
         popup.show();
     }
 
@@ -145,9 +144,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
 
         private int movieId;
+        final MovieModel movie;
 
-        public MyMenuItemClickListener(int MovieId) {
+        public MyMenuItemClickListener(int MovieId, MovieModel movieDetails) {
             movieId = MovieId;
+            movie = movieDetails;
         }
 
         @Override
@@ -155,11 +156,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             switch (menuItem.getItemId()) {
                 case R.id.action_add_favourite:
                     if (AddFavourite.isFavoriteMovie(movieId, mContext)) {
-                        Toast.makeText(mContext, "Here will be the Favourite menu", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, mContext.getString(R.string.editor_check_movie_failed), Toast.LENGTH_SHORT).show();
+
                     }
                     else
-                       if (AddFavourite.addMovieToFavorites(MovieDetails, getContentResolver())) {
-                        Toast.makeText(MovieAdapter.this, getString(R.string.editor_insert_movie_successful),
+                       if (AddFavourite.addMovieToFavorites(movie,  mContext.getContentResolver())) {
+                         Toast.makeText(mContext, mContext.getString(R.string.editor_insert_movie_successful),
                                 Toast.LENGTH_SHORT).show();
                        }
 

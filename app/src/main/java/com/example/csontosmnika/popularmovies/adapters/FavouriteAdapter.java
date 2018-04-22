@@ -1,30 +1,18 @@
 package com.example.csontosmnika.popularmovies.adapters;
         import android.content.Context;
-        import android.content.Intent;
-        import android.database.Cursor;
-        import android.support.v7.widget.CardView;
-        import android.support.v7.widget.PopupMenu;
-        import android.support.v7.widget.RecyclerView;
-        import android.view.LayoutInflater;
-        import android.view.MenuInflater;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.ImageView;
-        import android.widget.TextView;
-        import android.widget.Toast;
+import android.database.Cursor;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-        import com.squareup.picasso.Picasso;
-        import com.example.csontosmnika.popularmovies.DetailsActivity;
-        import com.example.csontosmnika.popularmovies.R;
-        import com.example.csontosmnika.popularmovies.QueryUtils;
-        import com.example.csontosmnika.popularmovies.data.MovieContract.MovieEntry;
-        import com.example.csontosmnika.popularmovies.models.MovieModel;
-
-        import java.util.List;
-
-        import butterknife.BindView;
-        import butterknife.ButterKnife;
+import com.example.csontosmnika.popularmovies.R;
+import com.example.csontosmnika.popularmovies.data.MovieContract.MovieEntry;
+import com.example.csontosmnika.popularmovies.models.MovieModel;
+import com.squareup.picasso.Picasso;
 
 
 public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.ViewHolder> {
@@ -84,12 +72,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
         );
 
 
-        holder.movieOverflowView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopupMenu(view);
-            }
-        });
+
 
 
     }
@@ -126,8 +109,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
             movieTitleView = itemView.findViewById(R.id.tv_movie_title);
             movieOverflowView = itemView.findViewById(R.id.iv_overflow);
 
-
-
+            movieOverflowView.setVisibility(View.GONE);
         }
 
     }
@@ -185,33 +167,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     }
 
 
-    // Showing popup menu when tapping on 3 dots
-    private void showPopupMenu(View view) {
-        // inflate menu
-        PopupMenu popup = new PopupMenu(context, view);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_movie, popup.getMenu());
-        popup.setOnMenuItemClickListener(new FavouriteAdapter.MyMenuItemClickListener());
-        popup.show();
-    }
 
-    // Click listener for popup menu items
-    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
-        public MyMenuItemClickListener() {
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.action_add_favourite:
-                    Toast.makeText(context, "Here will be the Favourite menu", Toast.LENGTH_SHORT).show();
-                    return true;
-                default:
-            }
-            return false;
-        }
-    }
 
 
 }
