@@ -10,8 +10,8 @@ import android.database.Cursor;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,23 +22,21 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.csontosmnika.popularmovies.adapters.MovieAdapter;
 import com.example.csontosmnika.popularmovies.adapters.FavouriteAdapter;
-
+import com.example.csontosmnika.popularmovies.adapters.MovieAdapter;
+import com.example.csontosmnika.popularmovies.data.MovieContract.MovieEntry;
 import com.example.csontosmnika.popularmovies.models.MovieModel;
 import com.example.csontosmnika.popularmovies.utils.EndlessScrollListener;
 import com.example.csontosmnika.popularmovies.utils.ScreenColumnCalculator;
-import com.example.csontosmnika.popularmovies.data.MovieContract.MovieEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-// link to themoviedb.org
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.POPULAR_MOVIES;
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.TOP_RATED_MOVIES;
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.page;
-import static com.example.csontosmnika.popularmovies.data.MovieProvider.haveDeletedAnItem;
+
+// link to themoviedb.org
 
 
 // Used guidelines:
@@ -221,10 +219,6 @@ public class MainActivity extends AppCompatActivity implements
             currentLoaderId = ID_FAVOURITE_LOADER;
         }
 
-        if (haveDeletedAnItem == true)
-        {
-            getSupportLoaderManager().destroyLoader(ID_FAVOURITE_LOADER);
-        }
     }
 
     // Just from API
