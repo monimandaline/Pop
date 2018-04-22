@@ -115,7 +115,9 @@ public class MainActivity extends AppCompatActivity implements
             currentLoaderId = ID_THEMOVIEDB_LOADER;
             THEMOVIEDB_URL = POPULAR_MOVIES;
             //getSupportLoaderManager().initLoader(ID_THEMOVIEDB_LOADER, null, this);
-        }
+        } else
+        {currentLoaderId = savedState.getInt("CURRENT_LOADER_ID");
+            optionMenu = savedState.getString("MENU_POPULAR");}
 
         RecyclerView.setItemAnimator(new DefaultItemAnimator());
         RecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, dpToPx(4), true));
@@ -196,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements
         outState.putString("SORT_URL", THEMOVIEDB_URL);
         outState.putString("PAGE", String.valueOf(page));
         outState.putString("MENU_POPULAR", String.valueOf(optionMenu));
-       // outState.putInt("CURRENT_LOADER_ID",currentLoaderId );
+        outState.putInt("CURRENT_LOADER_ID",currentLoaderId );
     }
 
     @Override
@@ -206,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements
         THEMOVIEDB_URL = savedState.getString("SORT_URL");
         page = Integer.parseInt(savedState.getString("PAGE"));
         optionMenu = savedState.getString("MENU_POPULAR");
-       // currentLoaderId = savedState.getInt("CURRENT_LOADER_ID");
+        currentLoaderId = savedState.getInt("CURRENT_LOADER_ID");
 
         if (optionMenu == "POPULAR") {
             setTitle(R.string.popular_movies_menu_item);
