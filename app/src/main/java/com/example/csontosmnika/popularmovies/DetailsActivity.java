@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.csontosmnika.popularmovies.adapters.ReviewAdapter;
 import com.example.csontosmnika.popularmovies.adapters.TrailerAdapter;
+import com.example.csontosmnika.popularmovies.data.AddFavourite;
 import com.example.csontosmnika.popularmovies.data.MovieContract;
 import com.example.csontosmnika.popularmovies.models.MovieModel;
 import com.example.csontosmnika.popularmovies.models.ReviewModel;
@@ -42,7 +43,6 @@ import butterknife.ButterKnife;
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.API_KEY;
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.MOVIE_DETAILS_URL;
 import static com.example.csontosmnika.popularmovies.TheMovieDbApi.TheMovieApiDbConstants.YOUTUBE_URL;
-import static com.example.csontosmnika.popularmovies.data.MovieProvider.haveDeletedAnItem;
 
 // Parceler guideline: https://guides.codepath.com/android/Using-Parceler, https://github.com/codepath/android_guides/wiki/Using-Parceler
 // Autofit column: https://stackoverflow.com/questions/33575731/gridlayoutmanager-how-to-auto-fit-columns
@@ -161,9 +161,13 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
                 mIsFavoriteMovie = !mIsFavoriteMovie;
                 if (backdropView.getDrawable() instanceof BitmapDrawable) {
                     if (mIsFavoriteMovie) {
-                        addMovieToFavorites();
-                        AddToFavoriteFloatingActionButton.setImageResource(R.drawable.star_on);
 
+                        if (AddFavourite.addMovieToFavorites(MovieDetails, getContentResolver())) {
+                            Toast.makeText(this, getString(R.string.editor_insert_movie_successful),
+                                    Toast.LENGTH_SHORT).show();
+                            AddToFavoriteFloatingActionButton.setImageResource(R.drawable.star_on);
+
+                        }
                     } else {
                         deleteMovieFromFavorites();
                         //final String SELECTION = MovieContract.MovieEntry.COLUMN_ID + " = " + MovieDetails.getId();
@@ -215,7 +219,7 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
 
     }
 
-    private void addMovieToFavorites() {
+    private void addMovieToFavorites_old {
         ContentValues values = new ContentValues();
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, MovieDetails.getId());
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, MovieDetails.getOriginalTitle());
@@ -235,13 +239,11 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
         int rowsDeleted = getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendEncodedPath(MOVIE_ID).build(), null, null);
         // Show a toast message depending on whether or not the delete was successful.
         if (rowsDeleted == 0) {
-            haveDeletedAnItem = false;
             // If no rows were deleted, then there was an error with the delete.
             Toast.makeText(this, getString(R.string.editor_delete_movie_failed),
                     Toast.LENGTH_SHORT).show();
         } else {
 
-            haveDeletedAnItem = true;
             // Otherwise, the delete was successful and we can display a toast.
             Toast.makeText(this, getString(R.string.editor_delete_movie_successful),
                     Toast.LENGTH_SHORT).show();
