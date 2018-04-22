@@ -13,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.csontosmnika.popularmovies.DetailsActivity;
 import com.example.csontosmnika.popularmovies.R;
+import com.example.csontosmnika.popularmovies.data.AddFavourite;
 import com.example.csontosmnika.popularmovies.models.MovieModel;
 import com.squareup.picasso.Picasso;
 
@@ -102,7 +104,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         holder.movieOverflowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(view);
+                showPopupMenu(view, movie.getId());
             }
         });
 
@@ -130,26 +132,37 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     // Showing popup menu when tapping on 3 dots
-    private void showPopupMenu(View view) {
+    private void showPopupMenu(View view, int MovieId) {
         // inflate menu
         PopupMenu popup = new PopupMenu(mContext, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_movie, popup.getMenu());
-        popup.setOnMenuItemClickListener(new MyMenuItemClickListener());
+        popup.setOnMenuItemClickListener(new MyMenuItemClickListener(MovieId));
         popup.show();
     }
 
     // Click listener for popup menu items
     class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
 
-        public MyMenuItemClickListener() {
+        private int movieId;
+
+        public MyMenuItemClickListener(int MovieId) {
+            movieId = MovieId;
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case R.id.action_add_favourite:
-                    Toast.makeText(mContext, "Here will be the Favourite menu", Toast.LENGTH_SHORT).show();
+                    if (AddFavourite.isFavoriteMovie(movieId, mContext)) {
+                        Toast.makeText(mContext, "Here will be the Favourite menu", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                       if (AddFavourite.addMovieToFavorites(MovieDetails, getContentResolver())) {
+                        Toast.makeText(MovieAdapter.this, getString(R.string.editor_insert_movie_successful),
+                                Toast.LENGTH_SHORT).show();
+                       }
+
                     return true;
                 default:
             }

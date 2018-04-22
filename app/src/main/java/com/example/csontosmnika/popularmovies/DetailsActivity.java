@@ -2,11 +2,9 @@ package com.example.csontosmnika.popularmovies;
 
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -130,7 +128,7 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
 
         MOVIE_ID = String.valueOf(MovieDetails.getId());
 
-        if (isFavoriteMovie(MovieDetails.getId(), mContext)) {
+        if (AddFavourite.isFavoriteMovie(MovieDetails.getId(), mContext)) {
 
             mIsFavoriteMovie = true;
             AddToFavoriteFloatingActionButton.setImageResource(R.drawable.star_on);
@@ -163,16 +161,14 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
                     if (mIsFavoriteMovie) {
 
                         if (AddFavourite.addMovieToFavorites(MovieDetails, getContentResolver())) {
-                            Toast.makeText(this, getString(R.string.editor_insert_movie_successful),
+                            Toast.makeText(DetailsActivity.this,getString(R.string.editor_insert_movie_successful),
                                     Toast.LENGTH_SHORT).show();
                             AddToFavoriteFloatingActionButton.setImageResource(R.drawable.star_on);
 
                         }
                     } else {
                         deleteMovieFromFavorites();
-                        //final String SELECTION = MovieContract.MovieEntry.COLUMN_ID + " = " + MovieDetails.getId();
                         AddToFavoriteFloatingActionButton.setImageResource(R.drawable.star_off);
-                        //mSqLiteDatabase.delete(MovieContract.MovieEntry.TABLE_NAME, SELECTION, null);
                     }
                 }
 
@@ -206,8 +202,8 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
         imageView.setAnimation(animation);
     }
 
-
-    public static boolean isFavoriteMovie(int movieId, Context context) {
+/*
+    public static boolean isFavoriteMovie_old(int movieId, Context context) {
            String[] moviIdString = new String[]{String.valueOf(movieId)};
 
         Cursor cursor = context.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI, null, "movie_id = ?", moviIdString, null);
@@ -217,10 +213,11 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
         }
               return false;
 
-    }
+    }*/
 
+/*
     private void addMovieToFavorites_old {
-       /* ContentValues values = new ContentValues();
+        ContentValues values = new ContentValues();
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, MovieDetails.getId());
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, MovieDetails.getOriginalTitle());
         values.put(MovieContract.MovieEntry.COLUMN_USER_RATING, MovieDetails.getVoteAverage());
@@ -228,11 +225,11 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
         values.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, MovieDetails.getOverview());
         values.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, MovieDetails.getPosterPath());
         values.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, MovieDetails.getBackdropPath());
-        getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);*/
+        getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
         Toast.makeText(this, getString(R.string.editor_insert_movie_successful),
                 Toast.LENGTH_SHORT).show();
     }
-
+*/
 
     private void deleteMovieFromFavorites() {
         // Only perform the delete if this is an existing movie.
