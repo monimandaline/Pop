@@ -2,6 +2,8 @@ package com.example.csontosmnika.popularmovies.data;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 
 import com.example.csontosmnika.popularmovies.models.MovieModel;
@@ -29,4 +31,16 @@ public class AddFavourite {
 
     }
 
+
+    public static boolean isFavoriteMovie(int movieId, Context context) {
+        String[] moviIdString = new String[]{String.valueOf(movieId)};
+
+        Cursor cursor = context.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI, null, "movie_id = ?", moviIdString, null);
+        if (cursor.getCount() != 0) {
+
+            return true;
+        }
+        return false;
+
+    }
 }
