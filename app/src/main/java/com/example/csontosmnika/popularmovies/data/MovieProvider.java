@@ -53,8 +53,6 @@ public class MovieProvider extends ContentProvider {
     /** Database helper object */
     private MovieDbHelper mDbHelper;
 
-    static public boolean haveDeletedAnItem = false;
-
     @Override
     public boolean onCreate() {
         mDbHelper = new MovieDbHelper(getContext());

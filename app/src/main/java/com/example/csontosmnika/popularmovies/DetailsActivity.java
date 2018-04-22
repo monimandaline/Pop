@@ -220,7 +220,7 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
     }
 
     private void addMovieToFavorites_old {
-        ContentValues values = new ContentValues();
+       /* ContentValues values = new ContentValues();
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, MovieDetails.getId());
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, MovieDetails.getOriginalTitle());
         values.put(MovieContract.MovieEntry.COLUMN_USER_RATING, MovieDetails.getVoteAverage());
@@ -228,7 +228,7 @@ public class DetailsActivity extends AppCompatActivity  implements  LoaderManage
         values.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, MovieDetails.getOverview());
         values.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, MovieDetails.getPosterPath());
         values.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, MovieDetails.getBackdropPath());
-        getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
+        getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);*/
         Toast.makeText(this, getString(R.string.editor_insert_movie_successful),
                 Toast.LENGTH_SHORT).show();
     }
