@@ -2,11 +2,10 @@ package com.example.csontosmnika.popularmovies.utils;
 
 // Via  https://gist.github.com/pratikbutani/dc6b963aa12200b3ad88aecd0d103872 and Carlos (Udacity mentor)
 
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 
 
 public abstract class EndlessScrollListener extends RecyclerView.OnScrollListener {
@@ -91,7 +90,7 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
         if (!loading &&
                 (lastVisibleItemPosition + 1 //visibleThreshold
         ) >= totalItemCount
-        //        && view.getAdapter().getItemCount() > visibleThreshold
+                && view.getAdapter().getItemCount() > visibleThreshold
         )
         {// This condition will useful when recyclerview has less than visibleThreshold items
             currentPage++;
@@ -105,7 +104,7 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
 
     // Call whenever performing new searches
     public void resetState() {
-       // this.currentPage = this.startingPageIndex;
+        this.currentPage = this.startingPageIndex;
         this.previousTotalItemCount = 0;
         this.loading = true;
         this.lastVisibleItemPosition = 1;

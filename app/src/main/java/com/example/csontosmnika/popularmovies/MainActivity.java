@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements
         if (savedState == null) {
             currentLoaderId = ID_THEMOVIEDB_LOADER;
             THEMOVIEDB_URL = POPULAR_MOVIES;
+            page = 1; // probálkozás
             //getSupportLoaderManager().initLoader(ID_THEMOVIEDB_LOADER, null, this);
         } else
         {currentLoaderId = savedState.getInt("CURRENT_LOADER_ID");
